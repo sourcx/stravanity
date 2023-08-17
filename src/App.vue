@@ -1,8 +1,9 @@
 <template>
-  <div class="container bg-white shadow rounded px-3 py-3 my-3">
-    <Top class="mt-3 mb-4 mx-2"></Top>
+  <div class="container bg-white shadow rounded my-3">
+    <Top />
+    <Athlete :athlete="athlete" />
     <Problems v-bind="problems"></Problems>
-    <div class="row">
+    <div class="row mx-1 py-3">
       <div class="col-12 col-lg-6">
         <InteractiveMap @move="loadSegments" @ready="onMapReady" ref="map"></InteractiveMap>
         <img src="/img/powered-by-strava.svg" alt="Powered by Strava" height="30" class="float-end" />
@@ -30,13 +31,15 @@
 
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import InteractiveMap from './components/InteractiveMap.vue';
-  import Results from './components/Results.vue';
+  import type { AthleteResponse } from 'strava-v3';
   import { ActivityType, type Bounds, type Segment, type SegmentDetails } from '@/types';
   import Cookies from 'js-cookie';
   import axios from 'axios';
-  import Problems from '@/components/Problems.vue';
+  import Athlete from '@/components/Athlete.vue';
   import Top from '@/components/Top.vue';
+  import InteractiveMap from './components/InteractiveMap.vue';
+  import Problems from '@/components/Problems.vue';
+  import Results from './components/Results.vue';
 
   let timeout = 0;
 
@@ -50,12 +53,14 @@
   export default defineComponent({
     name: 'App',
     components: {
+      Athlete,
       Top,
-      Problems,
       InteractiveMap,
+      Problems,
       Results,
     },
     data: () => ({
+      athlete: null as AthleteResponse | null,
       ActivityType,
       activityType: ActivityType.Run as ActivityType,
       segments: {} as { [key: number]: Segment },
@@ -104,13 +109,27 @@
         }
       );
     },
+    mounted() {
+      this.loadAthlete();
+    },
     beforeMount() {
       const activityType = localStorage.getItem('activityType');
+
       if (activityType) {
         this.activityType = activityType as ActivityType;
       }
     },
     methods: {
+      async loadAthlete() {
+        const cachedAthlete = localStorage.getItem('athlete');
+
+        if (cachedAthlete) {
+          this.athlete = JSON.parse(cachedAthlete);
+        } else {
+          this.athlete = await api.get('/athlete').then((res) => res.data);
+          localStorage.setItem('athlete', JSON.stringify(this.athlete));
+        }
+      },
       async loadSegments(bounds: Bounds | null) {
         if (!bounds) {
           return;
