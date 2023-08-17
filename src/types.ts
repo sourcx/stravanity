@@ -16,6 +16,7 @@ export type SegmentDetails = {
   distance: number;
   local_legend: Lcl;
   xoms: Xoms;
+  average_grade: number;
 };
 
 export type Lcl = {

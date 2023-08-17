@@ -5,6 +5,10 @@
       <div class="h5">{{ distance }}</div>
     </div>
     <div class="col-auto">
+      <div class="text-muted small">Avg grade</div>
+      <div class="h5">{{ grade }}</div>
+    </div>
+    <div class="col-auto">
       <div class="text-muted small">Best time</div>
       <div class="h5">{{ segment.computed?.bestTimeString }}</div>
     </div>
@@ -35,6 +39,9 @@
     computed: {
       distance(): string {
         return formatDistance(this.segment.details?.distance);
+      },
+      grade(): string {
+        return this.segment.details?.average_grade?.toFixed(1) + '%';
       },
       speed(): string {
         return formatSpeed(this.segment.computed?.speedRecord, this.segment.details?.activity_type);

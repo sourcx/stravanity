@@ -5,6 +5,10 @@
       <div class="h5">{{ distance }}</div>
     </div>
     <div class="col-auto">
+      <div class="text-muted small">Avg grade</div>
+      <div class="h5">{{ grade }}</div>
+    </div>
+    <div class="col-auto">
       <div class="text-muted small">Effort count</div>
       <div class="h5">{{ segment.computed?.effortCount }}</div>
     </div>
@@ -33,6 +37,9 @@
     computed: {
       distance(): string {
         return formatDistance(this.segment.details?.distance);
+      },
+      grade(): string {
+        return this.segment.details?.average_grade?.toFixed(1) + '%';
       },
       totalDistance(): string {
         return formatDistance(this.segment.computed?.distanceToLocalLegend);
