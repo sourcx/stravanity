@@ -14,7 +14,11 @@
     </div>
     <div class="col-auto">
       <div class="text-muted small">Total distance</div>
-      <div class="h5">
+      <div
+        class="h5"
+        :class="athleteIsLocalLegend ? 'text-success fw-bold' : ''"
+        :title="athleteIsLocalLegend ? 'It\'s you!' : ''"
+      >
         <strong>{{ totalDistance }}</strong>
       </div>
     </div>
@@ -29,12 +33,19 @@
   export default defineComponent({
     name: 'LocalLegendResult',
     props: {
+      athleteId: {
+        type: Number,
+        required: true,
+      },
       segment: {
         type: Object as PropType<Segment>,
         required: true,
       },
     },
     computed: {
+      athleteIsLocalLegend(): boolean {
+        return this.segment.details?.local_legend?.athlete_id === this.athleteId;
+      },
       distance(): string {
         return formatDistance(this.segment.details?.distance);
       },

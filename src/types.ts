@@ -17,6 +17,12 @@ export type SegmentDetails = {
   local_legend: Lcl;
   xoms: Xoms;
   average_grade: number;
+  athlete_segment_stats: AthleteSegmentStats;
+  effort_count: number;
+};
+
+export type AthleteSegmentStats = {
+  pr_elapsed_time: number;
 };
 
 export type Lcl = {

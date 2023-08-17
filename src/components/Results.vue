@@ -3,9 +3,21 @@
     <div class="row justify-content-around">
       <div class="col-auto mb-4">
         <div class="btn-group">
-          <input type="radio" class="btn-check" id="course-record-radio" v-model="recordType" value="CourseRecord" />
+          <input
+            type="radio"
+            class="btn-check"
+            id="course-record-radio"
+            v-model="recordType"
+            :value="RecordType.CourseRecord"
+          />
           <label class="btn btn-outline-primary" for="course-record-radio">Course Record</label>
-          <input type="radio" class="btn-check" id="local-legend-radio" v-model="recordType" value="LocalLegend" />
+          <input
+            type="radio"
+            class="btn-check"
+            id="local-legend-radio"
+            v-model="recordType"
+            :value="RecordType.LocalLegend"
+          />
           <label class="btn btn-outline-primary" for="local-legend-radio">Local Legend</label>
         </div>
       </div>
@@ -31,8 +43,9 @@
       @highlight="highlight"
     >
       <component
-        :is="recordType === 'LocalLegend' ? 'LocalLegendResult' : 'CourseRecordResult'"
+        :is="recordType === RecordType.LocalLegend ? 'LocalLegendResult' : 'CourseRecordResult'"
         :segment="segment"
+        :athleteId="athleteId"
       ></component>
     </Result>
 
@@ -54,6 +67,9 @@
     name: 'Results',
     components: { Result, LocalLegendResult, CourseRecordResult },
     props: {
+      athleteId: {
+        type: String,
+      },
       segments: {
         type: Array as PropType<Segment[]>,
         required: true,
@@ -64,6 +80,7 @@
       },
     },
     data: () => ({
+      RecordType,
       recordType: RecordType.CourseRecord as RecordType,
       onlyWomen: false,
       highlighted: null as number | null,

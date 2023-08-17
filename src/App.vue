@@ -9,7 +9,7 @@
         <img src="/img/powered-by-strava.svg" alt="Powered by Strava" height="30" class="float-end" />
       </div>
       <div class="col-12 col-lg-6">
-        <Results :segments="segmentsArray" :bounds="bounds" v-if="bounds">
+        <Results :segments="segmentsArray" :bounds="bounds" :athleteId="athlete?.id" v-if="bounds">
           <template v-slot:activityType>
             <div class="btn-group">
               <input type="radio" class="btn-check" id="run-radio" v-model="activityType" :value="ActivityType.Run" />

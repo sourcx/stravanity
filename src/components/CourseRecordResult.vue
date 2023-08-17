@@ -9,6 +9,10 @@
       <div class="h5">{{ grade }}</div>
     </div>
     <div class="col-auto">
+      <div class="text-muted small">Efforts</div>
+      <div class="h5">{{ segment.details?.effort_count }}</div>
+    </div>
+    <div class="col-auto">
       <div class="text-muted small">Best time</div>
       <div class="h5">{{ segment.computed?.bestTimeString }}</div>
     </div>
@@ -16,8 +20,12 @@
       <div class="text-muted small">
         {{ label }}
       </div>
-      <div class="h5">
-        <strong>{{ speed }}</strong>
+      <div
+        class="h5"
+        :class="athleteIsFastest ? 'text-success fw-bold' : ''"
+        :title="athleteIsFastest ? 'It\'s you!' : ''"
+      >
+        {{ speed }}
       </div>
     </div>
   </div>
@@ -26,7 +34,7 @@
 <script lang="ts">
   import { defineComponent, type PropType } from 'vue';
   import { ActivityType, type Segment } from '@/types';
-  import { formatDistance, formatSpeed } from '@/utils';
+  import { formatDistance, formatSpeed, parseTime } from '@/utils';
 
   export default defineComponent({
     name: 'CourseRecordResult',
@@ -37,6 +45,15 @@
       },
     },
     computed: {
+      athleteIsFastest(): boolean {
+        const athletePr = this.segment.details?.athlete_segment_stats?.pr_elapsed_time;
+
+        if (athletePr) {
+          return athletePr === parseTime(this.segment.details?.xoms.kom!);
+        }
+
+        return false;
+      },
       distance(): string {
         return formatDistance(this.segment.details?.distance);
       },
