@@ -45,7 +45,6 @@
       <component
         :is="recordType === RecordType.LocalLegend ? 'LocalLegendResult' : 'CourseRecordResult'"
         :segment="segment"
-        :athleteId="athleteId"
       ></component>
     </Result>
 
@@ -67,9 +66,6 @@
     name: 'Results',
     components: { Result, LocalLegendResult, CourseRecordResult },
     props: {
-      athleteId: {
-        type: String,
-      },
       segments: {
         type: Array as PropType<Segment[]>,
         required: true,

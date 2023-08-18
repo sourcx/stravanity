@@ -5,11 +5,11 @@
     <Problems v-bind="problems"></Problems>
     <div class="row mx-1 py-3">
       <div class="col-12 col-lg-6">
-        <InteractiveMap @move="loadSegments" @ready="onMapReady" ref="map"></InteractiveMap>
+        <InteractiveMap @move="loadSegments" @ready="onMapReady" @select="selectSegment" ref="map"></InteractiveMap>
         <img src="/img/powered-by-strava.svg" alt="Powered by Strava" height="30" class="float-end" />
       </div>
       <div class="col-12 col-lg-6">
-        <Results :segments="segmentsArray" :bounds="bounds" :athleteId="athlete?.id" v-if="bounds">
+        <Results :segments="segmentsArray" :bounds="bounds" v-if="bounds" ref="results">
           <template v-slot:activityType>
             <div class="btn-group">
               <input type="radio" class="btn-check" id="run-radio" v-model="activityType" :value="ActivityType.Run" />
@@ -165,6 +165,9 @@
             }
           })
         );
+      },
+      async selectSegment(segmentId: number) {
+        (this.$refs.results as any).highlight(segmentId);
       },
       async fetchSegment(segmentId: number) {
         const key = `segment_${segmentId}`;

@@ -15,6 +15,7 @@
 
   export default defineComponent({
     name: 'InteractiveMap',
+    emits: ['ready', 'move', 'select'],
     data: () => ({
       map: null as Map | null,
       drawn: {} as { [segmentId: number]: { polyline: L.Polyline; marker: L.CircleMarker; tooltip: L.Tooltip } },
@@ -141,6 +142,9 @@
           drawn.polyline.addTo(this.map as Map);
           drawn.marker.addTo(this.map as Map);
           drawn.marker.bindTooltip(drawn.tooltip);
+          drawn.marker.addEventListener('click', () => {
+            this.$emit('select', segment.id);
+          });
         }
         this.drawn[segment.id] = drawn;
       },

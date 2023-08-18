@@ -63,6 +63,7 @@
         default: false,
       },
     },
+    emits: ['highlight'],
     methods: {
       closeDropdown() {
         (this.$refs.dropdownMenu as any).classList.remove('show');

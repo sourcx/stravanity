@@ -33,10 +33,6 @@
   export default defineComponent({
     name: 'LocalLegendResult',
     props: {
-      athleteId: {
-        type: Number,
-        required: true,
-      },
       segment: {
         type: Object as PropType<Segment>,
         required: true,
@@ -44,7 +40,8 @@
     },
     computed: {
       athleteIsLocalLegend(): boolean {
-        return this.segment.details?.local_legend?.athlete_id === this.athleteId;
+        const athleteId = (this.$root as any).athlete?.id;
+        return this.segment.details?.local_legend?.athlete_id === athleteId;
       },
       distance(): string {
         return formatDistance(this.segment.details?.distance);
