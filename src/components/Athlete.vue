@@ -31,6 +31,7 @@
   import { defineComponent, type PropType } from 'vue';
   import type { AthleteResponse } from 'strava-v3';
   import Cookies from 'js-cookie';
+  import { Cookie } from '@/types';
 
   export default defineComponent({
     name: 'Athlete',
@@ -54,8 +55,8 @@
     },
     methods: {
       logout() {
-        Cookies.remove('access_token');
-        Cookies.remove('refresh_token');
+        Cookies.remove(Cookie.AccesToken);
+        Cookies.remove(Cookie.RefreshToken);
         localStorage.removeItem('athlete');
         location.reload();
       },

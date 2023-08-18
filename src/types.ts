@@ -52,6 +52,11 @@ export enum ActivityType {
   Ride = 'Ride',
 }
 
+export enum Cookie {
+  AccesToken = 'access_token',
+  RefreshToken = 'refresh_token',
+}
+
 export type Computed = {
   distance?: string;
   distanceToLocalLegend?: number;
