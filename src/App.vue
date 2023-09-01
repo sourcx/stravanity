@@ -1,5 +1,6 @@
 <template>
   <div class="container bg-white shadow rounded px-3 py-3 my-3">
+    <Athlete :athlete="athlete" />
     <Top class="mt-3 mb-4 mx-2"></Top>
     <Problems v-bind="problems"></Problems>
     <div class="row">
@@ -18,7 +19,7 @@
             </div>
           </template>
         </Results>
-        <div v-if="problems.notConnected" class="pt-5 text-center">
+        <div v-if="athlete === null" class="pt-5 text-center">
           <h4>
             <span class="text-muted">Not connected</span>
           </h4>
@@ -30,9 +31,11 @@
 
 <script lang="ts">
   import { defineComponent } from 'vue';
+  import type { AthleteResponse } from 'strava-v3';
+  import Athlete from '@/components/Athlete.vue';
   import InteractiveMap from './components/InteractiveMap.vue';
   import Results from './components/Results.vue';
-  import { ActivityType, type Bounds, type Segment, type SegmentDetails } from '@/types';
+  import { ActivityType, Cookie, type Bounds, type Segment, type SegmentDetails } from '@/types';
   import Cookies from 'js-cookie';
   import axios from 'axios';
   import Problems from '@/components/Problems.vue';
@@ -43,26 +46,27 @@
   const api = axios.create({
     baseURL: 'https://www.strava.com/api/v3/',
     headers: {
-      Authorization: 'Bearer ' + Cookies.get('access_token'),
+      Authorization: 'Bearer ' + Cookies.get(Cookie.AccesToken),
     },
   });
 
   export default defineComponent({
     name: 'App',
     components: {
-      Top,
-      Problems,
+      Athlete,
       InteractiveMap,
+      Problems,
       Results,
+      Top,
     },
     data: () => ({
+      athlete: null as AthleteResponse | null,
       ActivityType,
       activityType: ActivityType.Run as ActivityType,
       segments: {} as { [key: number]: Segment },
       bounds: null as Bounds | null,
       problems: {
         limitReached: false,
-        notConnected: false,
       },
     }),
     watch: {
@@ -81,15 +85,14 @@
     created() {
       api.interceptors.response.use(
         (res) => {
-          this.problems.notConnected = false;
           this.problems.limitReached = false;
           return res;
         },
         (error) => {
-          this.problems.notConnected = error.response.status === 401;
           this.problems.limitReached = error.response.status === 429;
           if (error.response.status === 401) {
-            Cookies.remove('access_token');
+            Cookies.remove(Cookie.AccesToken);
+            localStorage.removeItem('athlete');
           }
 
           if (this.problems.limitReached) {
@@ -110,7 +113,20 @@
         this.activityType = activityType as ActivityType;
       }
     },
+    mounted() {
+      this.loadAthlete();
+    },
     methods: {
+      async loadAthlete() {
+        const cachedAthlete = localStorage.getItem('athlete');
+
+        if (cachedAthlete) {
+          this.athlete = JSON.parse(cachedAthlete);
+        } else {
+          this.athlete = await api.get('/athlete').then((res) => res.data);
+          localStorage.setItem('athlete', JSON.stringify(this.athlete));
+        }
+      },
       async loadSegments(bounds: Bounds | null) {
         if (!bounds) {
           return;

@@ -16,21 +16,6 @@
         </div>
       </div>
     </div>
-
-    <div class="row justify-content-center" v-if="notConnected">
-      <div class="col">
-        <div class="alert alert-primary px-4" role="alert">
-          <div class="row align-items-baseline">
-            <div class="col">Please connect with Strava to continue</div>
-            <div class="col-auto connect-button">
-              <a :href="connectURI">
-                <img alt="Connect with Strava" src="/img/button-connect.png" height="48" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -43,9 +28,6 @@
     }),
     props: {
       limitReached: {
-        type: Boolean,
-      },
-      notConnected: {
         type: Boolean,
       },
     },

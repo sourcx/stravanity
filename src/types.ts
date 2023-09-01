@@ -54,4 +54,9 @@ export type Computed = {
   bestTimeString?: string;
 };
 
+export enum Cookie {
+  AccesToken = 'access_token',
+  RefreshToken = 'refresh_token',
+}
+
 export type Bounds = [number, number, number, number];
