@@ -16,13 +16,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         serialize('refresh_token', payload.refresh_token, { expires: new Date('9999'), path: '/' }),
       ]);
 
-      if (!req.query.refresh) {
-        await axios.post(`https://maker.ifttt.com/trigger/stravanity/with/key/${process.env.IFTTT_API_KEY}`, {
-          value1: payload.athlete.firstname,
-          value2: payload.athlete.lastname,
-          value3: JSON.stringify(payload.athlete),
-        });
-      }
+      console.log('payload.athlete', payload.athlete);
+      console.log('payload.access_token', payload.access_token);
+      console.log('payload.refresh_token', payload.refresh_token);
+
+      // if (!req.query.refresh) {
+      //   await axios.post(`https://maker.ifttt.com/trigger/stravanity/with/key/${process.env.IFTTT_API_KEY}`, {
+      //     value1: payload.athlete.firstname,
+      //     value2: payload.athlete.lastname,
+      //     value3: JSON.stringify(payload.athlete),
+      //   });
+      // }
 
       res.redirect(302, '/');
       return;
